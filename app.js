@@ -11,6 +11,8 @@ var leaderRouter = require('./routes/leaderRouter');
 var promoRouter = require('./routes/promoRouter');
 
 const Dishes = require('./models/dishes');
+const Promotions = require('./models/promotions');
+const Leaders = require('./models/leaders');
 
 const mongoose = require('mongoose');
 const url = 'mongodb://localhost:27017/cakeFactory';
