@@ -13,6 +13,7 @@ var usersRouter = require('./routes/users');
 var dishRouter = require('./routes/dishRouter');
 var leaderRouter = require('./routes/leaderRouter');
 var promoRouter = require('./routes/promoRouter');
+const uploadRouter = require('./routes/uploadRouter');
 
 const Dishes = require('./models/dishes');
 const Promotions = require('./models/promotions');
@@ -41,7 +42,10 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(passport.initialize());
 
-app.use('/', indexRouter);
+//app.use('/', indexRouter);
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/ind.html');
+});
 app.use('/users', usersRouter);
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -49,6 +53,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/dishes', dishRouter);
 app.use('/leaders', leaderRouter);
 app.use('/promoes', promoRouter);
+app.use('/imageUpload',uploadRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
