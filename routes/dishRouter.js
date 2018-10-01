@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const Dishes = require('../models/dishes');
 var authenticate = require('../authenticate');
-const cors = require('./cors');
+const cors = require('../cors');
 
 const dishRouter = express.Router();
 
