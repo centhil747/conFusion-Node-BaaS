@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 require('mongoose-currency').loadType(mongoose);
 var Currency = mongoose.Types.Currency;
 
-var leaderSchema = new Schema({
+var familySchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -14,7 +14,7 @@ var leaderSchema = new Schema({
         type: String,
         required: true
     },
-    designation: {
+    relation: {
         type: String,
         required: true
     },
@@ -34,6 +34,6 @@ var leaderSchema = new Schema({
     timestamps: true
 });
 
-var Leaders = mongoose.model('Leader', leaderSchema);
+var Family = mongoose.model('Family', familySchema);
 
-module.exports = Leaders;
+module.exports = Family;

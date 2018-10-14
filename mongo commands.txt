@@ -1,0 +1,28 @@
+About starting server:
+Create a folder "mongodb", then inside create another folder "data", then start mongoDB server from folder "mongodb"
+Or Create a folder named "data" anywhere and start the MongoDB server from the home folder which has the data folder start mongoDB server
+To start mongoDB server, use command in cmd = mongod --dbpath=data --bind_ip 127.0.0.1
+From anywhere to start shell = mongo
+
+About mongo default additions to data
+var id = new ObjectId();
+1.objectId
+2.createdAt
+3.updatedAt
+exit, logs us out of the shell command terminal
+
+About setting adin, admin should be set only internally, for safety
+To set admin from mongo shell:
+db.users.update({"username":"admin"}, {$set: {"admin": true}})
+
+About using db
+Type db = It gives the current db name
+default will be "test" db
+Type use "a db name", if not available, it will create one. eg: use cakeFactory
+use cakeFactory
+db.collectonName.insert({"name": "centhl"});
+db.dishes.find();
+db.users.find().pretty();
+db.dishes.find().pretty();
+db.promotions.find().pretty();
+db.leaders.find().pretty();

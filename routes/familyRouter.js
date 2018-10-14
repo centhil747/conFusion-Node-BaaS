@@ -2,41 +2,41 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const Leaders = require('../models/leaders');
+const Family = require('../models/family');
 var authenticate = require('../authenticate');
 const cors = require('../cors');
 
-const leaderRouter = express.Router();
+const familyRouter = express.Router();
 
-leaderRouter.use(bodyParser.json());
+familyRouter.use(bodyParser.json());
 
-leaderRouter.route('/')
+familyRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, (req,res,next) => {
-    Leaders.find(req.query)
-    .then((leaders) => {
+    Family.find(req.query)
+    .then((family) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(leaders);
+        res.json(family);
     }, (err) => next(err))
     .catch((err) => next(err));
 })
 .post(cors.corsWithOptions, authenticate.verifyOrdinaryUser, authenticate.verifyAdmin, (req, res, next) => {
-    Leaders.create(req.body)
-    .then((leader) => {
-        console.log('Leader Created ', leader);
+    Family.create(req.body)
+    .then((family) => {
+        console.log('Family members data Created ', family);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(leader);
+        res.json(family);
     }, (err) => next(err))
     .catch((err) => next(err));
 })
 .put(cors.corsWithOptions, authenticate.verifyOrdinaryUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
-    res.end('PUT operation not supported on /leaders');
+    res.end('PUT operation not supported on /family');
 })
 .delete(cors.corsWithOptions, authenticate.verifyOrdinaryUser, authenticate.verifyAdmin, (req, res, next) => {
-    Leaders.remove({})
+    Family.remove({})
     .then((resp) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -45,34 +45,34 @@ leaderRouter.route('/')
     .catch((err) => next(err));    
 });
 
-leaderRouter.route('/:leaderId')
+familyRouter.route('/:familyId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors, (req,res,next) => {
-    Leaders.findById(req.params.leaderId)
-    .then((leader) => {
+    Family.findById(req.params.familyId)
+    .then((family) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(leader);
+        res.json(family);
     }, (err) => next(err))
     .catch((err) => next(err));
 })
 .post(cors.corsWithOptions, authenticate.verifyOrdinaryUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
-    res.end('POST operation not supported on /leaders/'+ req.params.leaderId);
+    res.end('POST operation not supported on /family/'+ req.params.familyId);
 })
 .put(cors.corsWithOptions, authenticate.verifyOrdinaryUser, authenticate.verifyAdmin, (req, res, next) => {
-    Leaders.findByIdAndUpdate(req.params.leaderId, {
+    Family.findByIdAndUpdate(req.params.familyId, {
         $set: req.body
     }, { new: true })
-    .then((leader) => {
+    .then((family) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(leader);
+        res.json(family);
     }, (err) => next(err))
     .catch((err) => next(err));
 })
 .delete(cors.corsWithOptions, authenticate.verifyOrdinaryUser, authenticate.verifyAdmin, (req, res, next) => {
-    Leaders.findByIdAndRemove(req.params.leaderId)
+    Family.findByIdAndRemove(req.params.familyId)
     .then((resp) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -81,4 +81,4 @@ leaderRouter.route('/:leaderId')
     .catch((err) => next(err));
 });
 
-module.exports = leaderRouter;
+module.exports = familyRouter;
