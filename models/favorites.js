@@ -6,9 +6,9 @@ var favoriteSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    dishes: [{
+    pictures: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Dish'
+        ref: 'Picture'
     }]
 }, {
     timestamps: true

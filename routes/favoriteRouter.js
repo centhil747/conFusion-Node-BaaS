@@ -2,9 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const mongoose = require('mongoose');
-
 const Favorites = require('../models/favorites');
-const Dishes = require('../models/dishes');
 var authenticate = require('../authenticate');
 const cors = require('../cors');
 
@@ -17,7 +15,7 @@ favoriteRouter.route('/')
 .get(cors.corsWithOptions,authenticate.verifyOrdinaryUser, (req,res,next) => {
     Favorites.findOne({user: req.user._id})
     .populate('user')
-    .populate('dishes')
+    .populate('pictures')
     .then((favorites) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -30,8 +28,8 @@ favoriteRouter.route('/')
     .then((favorite) => {
         if (favorite) {
             for (var i=0; i<req.body.length; i++) {
-                if (favorite.dishes.indexOf(req.body[i]._id) === -1) {
-                    favorite.dishes.push(req.body[i]._id);
+                if (favorite.pictures.indexOf(req.body[i]._id) === -1) {
+                    favorite.pictures.push(req.body[i]._id);
                 }
             }
             favorite.save()
@@ -43,7 +41,7 @@ favoriteRouter.route('/')
             }, (err) => next(err)); 
         }
         else {
-            Favorites.create({"user": req.user._id, "dishes": req.body})
+            Favorites.create({"user": req.user._id, "pictures": req.body})
             .then((favorite) => {
                 console.log('Favorite Created ', favorite);
                 res.statusCode = 200;
@@ -79,7 +77,7 @@ favoriteRouter.route('/:dishId')
             return res.json({"exists": false, "favorites": favorites});
         }
         else {
-            if (favorites.dishes.indexOf(req.params.dishId) < 0) {
+            if (favorites.pictures.indexOf(req.params.dishId) < 0) {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 return res.json({"exists": false, "favorites": favorites});
@@ -98,8 +96,8 @@ favoriteRouter.route('/:dishId')
     Favorites.findOne({user: req.user._id})
     .then((favorite) => {
         if (favorite) {            
-            if (favorite.dishes.indexOf(req.params.dishId) === -1) {
-                favorite.dishes.push(req.params.dishId)
+            if (favorite.pictures.indexOf(req.params.dishId) === -1) {
+                favorite.pictures.push(req.params.dishId)
                 favorite.save()
                 .then((favorite) => {
                     console.log('Favorite Created ', favorite);
@@ -110,7 +108,7 @@ favoriteRouter.route('/:dishId')
             }
         }
         else {
-            Favorites.create({"user": req.user._id, "dishes": [req.params.dishId]})
+            Favorites.create({"user": req.user._id, "pictures": [req.params.dishId]})
             .then((favorite) => {
                 console.log('Favorite Created ', favorite);
                 res.statusCode = 200;
@@ -128,17 +126,23 @@ favoriteRouter.route('/:dishId')
 .delete(cors.corsWithOptions, authenticate.verifyOrdinaryUser, (req, res, next) => {
     Favorites.findOne({user: req.user._id})
     .then((favorite) => {
-        if (favorite && (favorite.dishes.length > 1)) {  
+        console.log('favorite', favorite);
+        if (favorite && (favorite.pictures.length > 1)) {  
             //array length is 1 if empty         
-            index = favorite.dishes.indexOf(req.params.dishId);
+            index = favorite.pictures.indexOf(req.params.dishId);
             if (index >= 0) {
-                favorite.dishes.splice(index, 1);
+                favorite.pictures.splice(index, 1);
                 favorite.save()
                 .then((favorite) => {
-                    console.log('Favorite Deleted ', favorite);
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(favorite);
+                    Favorites.findById(favorite._id)
+                    .populate('user')
+                    .populate('pictures')
+                    .then((favorite) => {
+                        console.log('Favorite Deleted ', favorite);
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(favorite);
+                    })
                 }, (err) => next(err));
             }
             else {
@@ -147,7 +151,7 @@ favoriteRouter.route('/:dishId')
                 return next(err);
             }
         }
-        else if (favorite && (favorite.dishes.length <= 1)) {
+        else if (favorite && (favorite.pictures.length <= 1)) {
             //array length is 1 if empty           
             Favorites.findOneAndRemove({"user": req.user._id})
             .then((resp) => {
