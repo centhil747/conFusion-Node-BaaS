@@ -1,5 +1,5 @@
 var passport = require('passport');
-var FacebookTokenStrategy = require('passport-facebook-token');
+var FacebookTokenStrategy = require('passport-facebook');
 var LocalStrategy = require('passport-local').Strategy;
 var JwtStrategy = require('passport-jwt').Strategy;
 var ExtractJwt = require('passport-jwt').ExtractJwt;
@@ -19,7 +19,7 @@ exports.getToken = function(user) {
 
 var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = config.secretKey;
+opts.secretOrKey = config.secretKey; 
 
 exports.jwtPassport = passport.use(new JwtStrategy(opts,
     (jwt_payload, done) => {
